@@ -1,0 +1,5 @@
+cakephp/**
+assets
+.env
+mysql/
+mysql-files/
