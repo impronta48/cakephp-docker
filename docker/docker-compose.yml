@@ -1,0 +1,54 @@
+###############################################################################
+#                          Generated on phpdocker.io                          #
+###############################################################################
+version: '3.1'
+services:
+  mobility48-mailhog:
+    image: 'mailhog/mailhog:latest'
+    container_name: mobility48-mailhog
+    ports:
+      - "8125:8025"
+
+  mobility48-mysql:
+    image: 'mysql:8.0'
+    container_name: mobility48-mysql
+    working_dir: /var/www/mobility48
+    volumes:
+        - ../mysql:/var/lib/mysql
+        - ../mysql-files:/var/lib/mysql-files
+        - ../cakephp:/var/www/mobility48
+        - ./mysql/my.cnf:/etc/mysql/my.cnf
+    ports:
+      - "8106:3306"
+    environment:
+      - MYSQL_ROOT_PASSWORD=${MYSQL_ROOT_PASSWORD}
+      - MYSQL_DATABASE=${MYSQL_DATABASE}
+      - MYSQL_USER=${MYSQL_USER}
+      - MYSQL_PASSWORD=${MYSQL_PASSWORD}
+
+  mobility48-nginx:
+    image: 'nginx:alpine'
+    container_name: mobility48-nginx
+    working_dir: /var/www/mobility48
+    volumes:
+        - ../cakephp:/var/www/mobility48
+        - ./nginx/nginx.conf:/etc/nginx/conf.d/default.conf
+    ports:
+     - "8180:80"
+    links:
+     - mobility48-php-fpm
+
+  mobility48-php-fpm:
+    build: ./php-fpm
+    container_name: mobility48-php-fpm
+    working_dir: /var/www/mobility48
+    expose:
+      - 9003
+    extra_hosts:
+      - "host.docker.internal:host-gateway"
+    volumes:
+      - ../cakephp:/var/www/mobility48
+      - ./php-fpm/php-ini-overrides.ini:/etc/php/7.4/fpm/conf.d/99-overrides.ini
+    links:
+      - mobility48-mailhog
+      - mobility48-mysql
