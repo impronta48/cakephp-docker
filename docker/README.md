@@ -177,6 +177,14 @@ Your `cakephp/config/app_local.php` file should be set to the following (it conn
 
 To change these defaults edit the variables in the `docker/.env` file or tweak the `docker-compose.yml` file under `mobility48-mysql`'s `environment` section.
 
+## Creation of initial database
+you can put a dump in the db-init folder and it will be imported automatically at startup.
+
+Be warned: the import will happen only if the mysql data folder is empty. If you want to force the import, delete the mysql folder and restart the containers.
+
+The folder mysqsl-files contains the files that will be exported from the database. The files must be in the root of the folder, not in subfolders.
+
+
 ## Now, how to run `bin/cake` and `mysql`
 
 Now that you're running stuff in containers you need to access the code a little differently

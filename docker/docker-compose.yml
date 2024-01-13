@@ -18,6 +18,7 @@ services:
         - ../mysql-files:/var/lib/mysql-files
         - ../cakephp:/var/www/mobility48
         - ./mysql/my.cnf:/etc/mysql/my.cnf
+        - ../db-init:/docker-entrypoint-initdb.d
     ports:
       - "8106:3306"
     environment:
